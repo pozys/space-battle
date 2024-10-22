@@ -1,1 +1,1 @@
-# space-battle
+# Space Battle
