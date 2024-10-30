@@ -15,5 +15,10 @@
             "email": "pozys@mail.ru"
         }
     ],
-    "require": {}
+    "require": {},
+    "scripts": {
+        "test": [
+            "./vendor/bin/phpunit tests"
+        ]
+    }
 }
