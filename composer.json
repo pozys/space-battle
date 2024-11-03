@@ -15,7 +15,9 @@
             "email": "pozys@mail.ru"
         }
     ],
-    "require": {},
+    "require": {
+        "monolog/monolog": "^3.7"
+    },
     "scripts": {
         "test": [
             "./vendor/bin/phpunit tests"

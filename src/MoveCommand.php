@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pozys\SpaceBattle;
 
+use Pozys\SpaceBattle\ExceptionHandlers\LogExceptionCommand;
 use Pozys\SpaceBattle\Exceptions\{GetLocationException, GetVelocityException, MoveObjectException};
 use Pozys\SpaceBattle\Interfaces\MovingInterface;
 
@@ -16,6 +17,7 @@ class MoveCommand
         try {
             $currentLocation = $this->movingObject->getLocation();
         } catch (GetLocationException $th) {
+            (new LogExceptionCommand($th))->execute();
             throw $th;
         }
 
