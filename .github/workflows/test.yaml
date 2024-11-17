@@ -3,7 +3,11 @@ name: Test
 on:
   workflow_call:
   pull_request:
-    branches: ["master"]
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   test-coverage:
