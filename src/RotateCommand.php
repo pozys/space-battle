@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pozys\SpaceBattle;
 
 use Pozys\SpaceBattle\Exceptions\{GetAngleException, GetAngularVelocityException, RotateObjectException};
-use Pozys\SpaceBattle\Interfaces\RotatingInterface;
+use Pozys\SpaceBattle\Interfaces\{CommandInterface, RotatingInterface};
 
-class RotateCommand
+class RotateCommand implements CommandInterface
 {
     public function __construct(private RotatingInterface $rotatingObject) {}
 
