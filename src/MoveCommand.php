@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pozys\SpaceBattle;
 
 use Pozys\SpaceBattle\Exceptions\{GetLocationException, GetVelocityException, MoveObjectException};
-use Pozys\SpaceBattle\Interfaces\MovingInterface;
+use Pozys\SpaceBattle\Interfaces\{CommandInterface, MovingInterface};
 
-class MoveCommand
+class MoveCommand implements CommandInterface
 {
     public function __construct(private MovingInterface $movingObject) {}
 
