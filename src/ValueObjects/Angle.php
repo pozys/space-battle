@@ -14,4 +14,9 @@ class Angle
     {
         return new self(($this->direction + $angle->direction) % self::DIRECTIONS_NUMBER, self::DIRECTIONS_NUMBER);
     }
+
+    public function toRadians(): int
+    {
+        return (int) round($this->direction / 360 * self::DIRECTIONS_NUMBER);
+    }
 }

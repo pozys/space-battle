@@ -6,7 +6,7 @@ namespace Pozys\SpaceBattle\ValueObjects;
 
 class Vector
 {
-    public function __construct(public readonly int $x, public readonly int $y) {}
+    public function __construct(public readonly float $x, public readonly float $y) {}
 
     public function plus(Vector $vector): self
     {
