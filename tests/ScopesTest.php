@@ -20,13 +20,6 @@ final class ScopesTest extends TestCase
         $this->assertNotEmpty($currentScope);
     }
 
-    public function testCanCreateScope(): void
-    {
-        $newScope = Container::resolve('IoC.Scope.Create');
-
-        $this->assertArrayHasKey('IoC.Scope.Parent', $newScope);
-    }
-
     public function testCanSetCurrentScope(): void
     {
         $newScope = Container::resolve('IoC.Scope.Create');
@@ -63,5 +56,23 @@ final class ScopesTest extends TestCase
         Container::resolve('IoC.Register', 'someDependency', fn() => 1);
 
         $this->assertSame(1, Container::resolve('someDependency'));
+    }
+
+    public function testShouldFindDependencyInParentScopeWhenCurrentScopeDoesNotContainIt(): void
+    {
+        $test = false;
+
+        $parentScope = Container::resolve('IoC.Scope.Create');
+        Container::resolve('IoC.Register', 'someDependency', function () use (&$test) {
+            $test = true;
+        });
+
+        $currentScope = Container::resolve('IoC.Scope.Create', $parentScope);
+
+        Container::resolve('IoC.Scope.Current.Set', $currentScope);
+
+        Container::resolve('someDependency');
+
+        $this->assertTrue($test);
     }
 }

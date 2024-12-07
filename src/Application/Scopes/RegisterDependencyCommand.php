@@ -15,7 +15,8 @@ class RegisterDependencyCommand implements CommandInterface
     public function execute(): void
     {
         $currentScope = Container::resolve('IoC.Scope.Current');
-        $currentScope[$this->dependency] = $this->dependecyResolverStrategy;
+        $currentScope->add($this->dependency, $this->dependecyResolverStrategy);
+
         Container::resolve('IoC.Scope.Current.Set', $currentScope);
     }
 }

@@ -8,16 +8,16 @@ use Pozys\SpaceBattle\Interfaces\DependencyResolverInterface;
 
 class DependencyResolver implements DependencyResolverInterface
 {
-    public function __construct(private array $scope) {}
+    public function __construct(private Scope $scope) {}
 
     public function resolve(string $dependency, ...$args): mixed
     {
         while (true) {
-            if (array_key_exists($dependency, $this->scope)) {
-                return $this->scope[$dependency](...$args);
+            if ($this->scope->getValue($dependency) !== null) {
+                return $this->scope->getValue($dependency)(...$args);
             }
 
-            $this->scope = $this->scope['IoC.Scope.Parent']();
+            $this->scope = $this->scope->getValue('IoC.Scope.Parent')();
         }
     }
 }

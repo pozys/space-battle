@@ -12,47 +12,40 @@ use Pozys\SpaceBattle\Interfaces\CommandInterface;
 
 class InitCommand implements CommandInterface
 {
-    private static array $rootScope = [];
+    private static Scope $rootScope;
 
-    private static ?array $currentScope = null;
-
-    public function __construct() {}
+    private static ?Scope $currentScope;
 
     public function execute(): void
     {
-        self::$rootScope['IoC.Scope.Current.Set'] = fn(...$params) => (new SetCurrentScopeCommand($params[0]))->execute();
+        self::$rootScope = new Scope();
 
-        self::$rootScope['IoC.Scope.Current.Clear'] = fn() => (new ClearCurrentScopeCommand())->execute();
+        self::$rootScope->add('IoC.Scope.Current.Set', fn(...$params) => self::$currentScope = $params[0]);
 
-        self::$rootScope['IoC.Scope.Current'] = fn() => self::$currentScope ?? self::$rootScope;
+        self::$rootScope->add('IoC.Scope.Current.Clear', fn() => self::$currentScope = null);
 
-        self::$rootScope['IoC.Scope.Parent'] = fn() => throw new Exception('The root scope has no a parent scope.');
+        self::$rootScope->add('IoC.Scope.Current', fn(...$params) => self::$currentScope ?? self::$rootScope);
 
-        self::$rootScope['IoC.Scope.Create.Empty'] = fn() => [];
+        self::$rootScope->add('IoC.Scope.Parent', fn() => throw new Exception('The root scope has no a parent scope.'));
 
-        self::$rootScope['IoC.Scope.Create'] = function (...$params) {
+        self::$rootScope->add('IoC.Scope.Create.Empty', fn() => new Scope());
+
+        self::$rootScope->add('IoC.Scope.Create', function (...$params) {
             $newScope = Container::resolve('IoC.Scope.Create.Empty');
 
             $parentScope = empty($params) ? Container::resolve('IoC.Scope.Current') : $params[0];
-            $newScope['IoC.Scope.Parent'] = fn() => $parentScope;
+            $newScope->add('IoC.Scope.Parent', fn() => $parentScope);
 
             return $newScope;
-        };
+        });
 
-        self::$rootScope['IoC.Register'] = fn(...$params) => (new RegisterDependencyCommand(...$params))->execute();
+        self::$rootScope->add('IoC.Register', fn(...$params) => (new RegisterDependencyCommand(...$params))->execute());
 
         Container::resolve(
             'Update Ioc Resolve Dependency Strategy',
             fn(callable $formerStrategy) => function (string $dependency, ...$params) {
-                $scope = self::$currentScope ?? self::$rootScope;
-
-                return (new DependencyResolver($scope))->resolve($dependency, ...$params);
+                return (new DependencyResolver(self::$currentScope ?? self::$rootScope))->resolve($dependency, ...$params);
             }
         )->execute();
-    }
-
-    public static function setCurrentScope(?array $currentScope): void
-    {
-        self::$currentScope = $currentScope;
     }
 }
