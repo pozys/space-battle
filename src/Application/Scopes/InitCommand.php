@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Pozys\SpaceBattle;
-
 namespace Pozys\SpaceBattle\Application\Scopes;
 
 use Exception;
