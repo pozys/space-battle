@@ -3,16 +3,10 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Pozys\SpaceBattle\Application\Scopes\InitCommand;
 use Pozys\SpaceBattle\Container;
 
 final class ScopesTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        (new InitCommand())->execute();
-    }
-
     public function testCanGetCurrentScope(): void
     {
         $currentScope = Container::resolve('IoC.Scope.Current');
