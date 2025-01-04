@@ -8,7 +8,7 @@
         "psr-4": {
             "Pozys\\SpaceBattle\\": "src/",
             "Pozys\\SpaceBattle\\Plugins\\": "plugins/",
-            "Pozys\\SpaceBattle\\Tests": "tests/"
+            "Pozys\\SpaceBattle\\Tests\\": "tests/"
         }
     },
     "authors": [
