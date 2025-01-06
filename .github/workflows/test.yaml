@@ -19,6 +19,10 @@ jobs:
         with:
           php-version: "8.3"
       - uses: actions/checkout@v4
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Replace Environment Variables
+        run: sed -i -- "s|%JWT_SECRET%|${{ secrets.JWT_SECRET }}|g" .env
       - name: Install PHP Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: run coverage analysis

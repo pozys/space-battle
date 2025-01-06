@@ -7,7 +7,8 @@
     "autoload": {
         "psr-4": {
             "Pozys\\SpaceBattle\\": "src/",
-            "Pozys\\SpaceBattle\\Plugins\\": "plugins/"
+            "Pozys\\SpaceBattle\\Plugins\\": "plugins/",
+            "Pozys\\SpaceBattle\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -18,7 +19,10 @@
     ],
     "require": {
         "monolog/monolog": "^3.7",
-        "nette/php-generator": "^4.1"
+        "nette/php-generator": "^4.1",
+        "symfony/http-foundation": "^7.2",
+        "vlucas/phpdotenv": "^5.6",
+        "lcobucci/jwt": "^4.0"
     },
     "scripts": {
         "test": [
