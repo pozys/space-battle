@@ -19,7 +19,8 @@
     ],
     "require": {
         "monolog/monolog": "^3.7",
-        "nette/php-generator": "^4.1"
+        "nette/php-generator": "^4.1",
+        "php-amqplib/php-amqplib": "^3.7"
     },
     "scripts": {
         "test": [

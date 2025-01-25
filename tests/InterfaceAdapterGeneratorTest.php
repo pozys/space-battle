@@ -3,20 +3,13 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Pozys\SpaceBattle\Application\Scopes\InitCommand;
 use Pozys\SpaceBattle\Container;
 use Pozys\SpaceBattle\Core\InterfaceAdapterGenerator;
-use Pozys\SpaceBattle\Interfaces\GameObjectInterface;
-use Pozys\SpaceBattle\Interfaces\MovingInterface;
+use Pozys\SpaceBattle\Interfaces\{GameObjectInterface, MovingInterface};
 use Pozys\SpaceBattle\Plugins\MovingPlugin;
 
 final class InterfaceAdapterGeneratorTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        (new InitCommand())->execute();
-    }
-
     public function testSuccessfullGeneration(): void
     {
         $interfaceName = MovingInterface::class;
