@@ -33,7 +33,7 @@ final class GameRuleMessageHandlerTest extends TestCase
                 $gameId => $queue,
                 1000 => []
             ];
-            var_dump($id);
+
             return $queues[$id];
         });
 
