@@ -4,29 +4,20 @@ declare(strict_types=1);
 
 namespace Pozys\SpaceBattle;
 
-use Closure;
-use Pozys\SpaceBattle\ExceptionHandlers\ExceptionHandler;
-use Pozys\SpaceBattle\Interfaces\CommandInterface;
+use Pozys\SpaceBattle\CommandQueueHandlers\DefaultHandler;
+use Pozys\SpaceBattle\Interfaces\{CommandInterface, CommandQueueHandlerInterface};
 use SplDoublyLinkedList;
 use SplQueue;
 
 class CommandQueueHandler
 {
     private static SplQueue $queue;
-    private static $runningCondition;
+    private static ?CommandQueueHandlerInterface $handler;
 
-    public static function handle(?Closure $runningCondition = null): void
+    public static function handle(): void
     {
-        global $isRunning;
-        $isRunning = $runningCondition ?? self::$runningCondition;
-
-        while ($isRunning(self::$queue)) {
-            $command = self::$queue->dequeue();
-            try {
-                $command->execute();
-            } catch (\Throwable $th) {
-                ExceptionHandler::handle($command, $th)->execute();
-            }
+        while (self::$handler !== null) {
+            self::$handler = self::$handler->handle(self::$queue);
         }
     }
 
@@ -37,8 +28,10 @@ class CommandQueueHandler
 
     public static function reset(): void
     {
+        Container::resolve('IoC.Register', 'CommandHandler.default', fn(CommandInterface $command) => fn() => $command->execute());
+
         self::$queue = new SplQueue();
         self::$queue->setIteratorMode(SplDoublyLinkedList::IT_MODE_DELETE);
-        self::$runningCondition = fn() => !self::$queue->isEmpty();
+        self::$handler = Container::resolve(DefaultHandler::class);
     }
 }

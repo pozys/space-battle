@@ -15,7 +15,7 @@ class Container
         return self::getStrategy()($dependency, ...$params);
     }
 
-    public static function setStrategy(callable $strategy): void
+    public static function setStrategy(?callable $strategy): void
     {
         self::$strategy = $strategy;
     }

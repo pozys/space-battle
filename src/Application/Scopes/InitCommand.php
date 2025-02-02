@@ -7,6 +7,7 @@ namespace Pozys\SpaceBattle\Application\Scopes;
 use Exception;
 use Pozys\SpaceBattle\Container;
 use Pozys\SpaceBattle\Interfaces\CommandInterface;
+use Pozys\SpaceBattle\UpdateIocResolveDependencyStrategyCommand;
 
 class InitCommand implements CommandInterface
 {
@@ -17,6 +18,11 @@ class InitCommand implements CommandInterface
     public function execute(): void
     {
         self::$rootScope = new Scope();
+
+        self::$rootScope->add(
+            'Update Ioc Resolve Dependency Strategy',
+            fn(...$params) => new UpdateIocResolveDependencyStrategyCommand($params[0])
+        );
 
         self::$rootScope->add('IoC.Scope.Current.Set', fn(...$params) => self::$currentScope = $params[0]);
 

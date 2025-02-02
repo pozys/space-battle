@@ -5,12 +5,26 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use Pozys\SpaceBattle\Application\{EnqueueCommand, LogExceptionCommand, RetryCommand, SafeExecutionCommand, RetryTwiceCommand};
 use Pozys\SpaceBattle\CommandQueueHandler;
+use Pozys\SpaceBattle\CommandQueueHandlers\DefaultHandler;
+use Pozys\SpaceBattle\Container;
 use Pozys\SpaceBattle\ExceptionHandlers\ExceptionHandler;
 use Pozys\SpaceBattle\Exceptions\GetLocationException;
-use Pozys\SpaceBattle\Interfaces\CommandInterface;
+use Pozys\SpaceBattle\Interfaces\{CommandInterface, CommandQueueHandlerInterface};
 
 final class ExceptionHandlersTest extends TestCase
 {
+    public static function setUpBeforeClass(): void
+    {
+        Container::resolve('IoC.Register', DefaultHandler::class, fn(): ?CommandQueueHandlerInterface => new class implements CommandQueueHandlerInterface {
+            public function handle(SplQueue $queue): ?CommandQueueHandlerInterface
+            {
+                (new DefaultHandler())->handle($queue);
+
+                return null;
+            }
+        });
+    }
+
     public function testEnqueueLogExceptionCommand(): void
     {
         $exceptionClass = GetLocationException::class;
