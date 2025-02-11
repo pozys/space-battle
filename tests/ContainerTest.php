@@ -7,6 +7,13 @@ use Pozys\SpaceBattle\Container;
 
 final class ContainerTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Container::setStrategy(null);
+    }
+
     public function testIoCShouldUpdateDependencyStrategy(): void
     {
         $test = false;

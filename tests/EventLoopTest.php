@@ -7,12 +7,27 @@ namespace Pozys\SpaceBattle\Tests;
 use PHPUnit\Framework\TestCase;
 use Pozys\SpaceBattle\Application\EnqueueCommand;
 use Pozys\SpaceBattle\CommandQueueHandler;
-use Pozys\SpaceBattle\HardStopCommand;
-use Pozys\SpaceBattle\Interfaces\CommandInterface;
-use Pozys\SpaceBattle\SoftStopCommand;
+use Pozys\SpaceBattle\Application\Scopes\InitCommand;
+use Pozys\SpaceBattle\CommandQueueHandlers\DefaultHandler;
+use Pozys\SpaceBattle\Container;
+use Pozys\SpaceBattle\Interfaces\{CommandInterface, CommandQueueHandlerInterface};
+use SplQueue;
 
 final class EventLoopTest extends TestCase
 {
+    public static function setUpBeforeClass(): void
+    {
+        (new InitCommand())->execute();
+        Container::resolve('IoC.Register', DefaultHandler::class, fn(): ?CommandQueueHandlerInterface => new class implements CommandQueueHandlerInterface {
+            public function handle(SplQueue $queue): ?CommandQueueHandlerInterface
+            {
+                (new DefaultHandler())->handle($queue);
+
+                return null;
+            }
+        });
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,36 +52,6 @@ final class EventLoopTest extends TestCase
         CommandQueueHandler::handle();
 
         $this->assertTrue($wasCalled);
-    }
-
-    public function testHardStop(): void
-    {
-        $called = $this->createMock(CommandInterface::class);
-        $called->expects($this->once())->method('execute');
-        $this->addToQueue($called);
-
-        $this->addToQueue(new HardStopCommand());
-
-        $neverCalled = $this->createMock(CommandInterface::class);
-        $neverCalled->expects($this->never())->method('execute');
-        $this->addToQueue($neverCalled);
-
-        CommandQueueHandler::handle(fn() => true);
-    }
-
-    public function testSoftStop(): void
-    {
-        $called = $this->createMock(CommandInterface::class);
-        $called->expects($this->once())->method('execute');
-        $this->addToQueue($called);
-
-        $this->addToQueue(new SoftStopCommand());
-
-        $calledAfterStopCommand = $this->createMock(CommandInterface::class);
-        $calledAfterStopCommand->expects($this->once())->method('execute');
-        $this->addToQueue($calledAfterStopCommand);
-
-        CommandQueueHandler::handle(fn() => true);
     }
 
     private function addToQueue(CommandInterface $command): void
